@@ -1,0 +1,63 @@
+Class
+
+Screen
+Has
+- Route String
+- Name
+- consolReader BufferedReader
+- ScreenRouter router
+
+Can
+- Render in the console
+- Provide a user with what inputs they should put in to get a result
+- be a linked list
+- possess route headers to make routing easy even if it's a bit slow
+
+Screen Router
+Has
+- Screens LinkedList<Screen>
+
+LinkedList
+Extends List
+Has
+- head Node<t> (where t is the given type in declaration)
+- tail 
+- size
+
+User
+Has
+- Password [2] String
+- Username [1] String
+- UUID [0] String
+- Associated Accounts (Put in accounts) [ in accounts] String
+Can
+- Open an account
+    - Add other usernames to the account
+    - (Optional) Accept joining a joint account
+- Withdraw from an account
+- Be saved to a file
+    -(Optional) with a hashed password
+- Deposit to an account
+- View transaction history
+- Transfer to a different account
+
+Account
+Has
+- Balance [1]
+- ID [0]
+- User(s) [2+]
+    -Likely have the first two saved in the first two fields separated by :'s
+    Then have the following 3+ fields contain users on the accounts.
+Can
+ - be saved to a file in the ":" format
+ - be pulled from a file
+
+Transaction
+Has
+- Account [0]
+- Type (Deposit (0), Withdraw (1), Transfer (2)) [1]
+- Amount [2] float
+- 
+
+
+
