@@ -20,12 +20,37 @@ public class UserService {
             throw new InvalidRequestException("Invalid user data provided!");
         }
 
-        // TODO: write logic that verifies that the new user's username and email are not already taken
+        // TODO: create a new error code
 
-        AppUser registeredUser = userDAO.save(newUser);
+
+        File usersFile = new File("resources/data.txt");
+        boolean unique = true;
+
+        try(BufferedReader br = new BufferedReader(new FileReader(usersFile))) {
+            for(String line; (line = br.readLine()) != null; ) {
+
+                String[] each = line.split(":");
+                if( each[4].equals(newUser.getUsername())){
+                    System.out.println("User already exists with that Username!");
+                    unique = false;
+                }
+                if ( each[3].equals(newUser.getEmail()) ) {
+                    System.out.println("User already exists with that Email!");
+                    unique = false;
+                }
+
+            }
+        } catch(Exception e) {
+            throw new ResourcePersistenceException("File Reading Error!");
+        }
+
+        AppUser registeredUser = null;
+        if (unique) {
+             registeredUser = userDAO.save(newUser);
+        }
 
         if (registeredUser == null) {
-            throw new ResourcePersistenceException("The user could not be persisted to the datasource!");
+            return false;
         }
 
         return true;
