@@ -6,9 +6,9 @@ import com.revature.cmdBanking.util.List;
 import java.io.*;
 import java.util.UUID;
 
+// Contains the functionality of the appUser class
 public class AppUserDAO implements CrudDAO<AppUser> {
 
-    // TODO: Implement me!
     public AppUser findUserByUsernameAndPassword(String username, String password) {
         File usersFile = new File("resources/data.txt");
 
