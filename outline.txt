@@ -24,7 +24,7 @@ Has
 - tail 
 - size
 
-User
+User (Saved to database)
 Has
 - Password [2] String varchar
 - Username [1] String varchar
@@ -41,7 +41,7 @@ Can
 - View transaction history
 - Transfer to a different account
 
-Account
+Account (Saved to database)
 Has
 - Balance [1] numeric(11,2)
 - ID [0] serial
@@ -52,7 +52,7 @@ Can
  - be saved to a file in the ":" format
  - be pulled from a file
 
-Transaction
+Transaction (Saved to database)
 Has
 - Account_ID [0] foreign key int
 - Type (Deposit (0), Withdraw (1), Transfer (2)) [1] int
