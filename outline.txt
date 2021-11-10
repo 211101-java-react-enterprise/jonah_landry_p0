@@ -26,10 +26,10 @@ Has
 
 User
 Has
-- Password [2] String
-- Username [1] String
-- UUID [0] String
-- Associated Accounts (Put in accounts) [ in accounts] String
+- Password [2] String varchar
+- Username [1] String varchar
+- UUID [0] String varchar
+- Associated Accounts (Put in accounts) [ in accounts] String varchar
 Can
 - Open an account
     - Add other usernames to the account
@@ -43,9 +43,9 @@ Can
 
 Account
 Has
-- Balance [1]
-- ID [0]
-- User(s) [2+]
+- Balance [1] numeric(11,2)
+- ID [0] serial
+- User(s) [2+] ???
     -Likely have the first two saved in the first two fields separated by :'s
     Then have the following 3+ fields contain users on the accounts.
 Can
@@ -54,10 +54,10 @@ Can
 
 Transaction
 Has
-- Account [0]
-- Type (Deposit (0), Withdraw (1), Transfer (2)) [1]
-- Amount [2] float
-- 
+- Account_ID [0] foreign key int
+- Type (Deposit (0), Withdraw (1), Transfer (2)) [1] int
+- Amount [2] numeric(11,2)
+- Transaction_ID serial
 
 
 
