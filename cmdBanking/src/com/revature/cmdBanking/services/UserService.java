@@ -12,7 +12,17 @@ import java.io.FileReader;
 
 public class UserService {
 
-    private AppUserDAO userDAO = new AppUserDAO();
+    private final AppUserDAO userDAO ;
+    private AppUser sessionUser;
+
+    public UserService(AppUserDAO userDAO) {
+        this.userDAO = userDAO;
+        this.sessionUser = null;
+    }
+
+    public AppUser getSessionUser() {
+        return sessionUser;
+    }
 
     public boolean registerNewUser(AppUser newUser) {
 
@@ -20,60 +30,55 @@ public class UserService {
             throw new InvalidRequestException("Invalid user data provided!");
         }
 
-        // TODO: create a new error code
+        boolean usernameAvailable = userDAO.findUserByUsername(newUser.getUsername()) == null;
+        boolean emailAvailable = userDAO.findUserByEmail(newUser.getEmail()) == null;
 
-
-        File usersFile = new File("resources/data.txt");
-        boolean unique = true;
-
-        try(BufferedReader br = new BufferedReader(new FileReader(usersFile))) {
-            for(String line; (line = br.readLine()) != null; ) {
-
-                String[] each = line.split(":");
-                if( each[4].equals(newUser.getUsername())){
-                    System.out.println("User already exists with that Username!");
-                    unique = false;
-                }
-                if ( each[3].equals(newUser.getEmail()) ) {
-                    System.out.println("User already exists with that Email!");
-                    unique = false;
-                }
-
-            }
-        } catch(Exception e) {
-            throw new ResourcePersistenceException("File Reading Error!");
+        if (!usernameAvailable || !emailAvailable) {
+//            if (!usernameAvailable && emailAvailable) {
+//                throw new ResourcePersistenceException("The provided username was already taken in the datasource!");
+//            } else if (usernameAvailable) {
+//                throw new ResourcePersistenceException("The provided email was already taken in the datasource!");
+//            } else {
+//                throw new ResourcePersistenceException("The provided username and email was already taken in the datasource!");
+//            }
+            String msg = "The values provided for the following fields are already taken by other users:";
+            if (!usernameAvailable) msg = msg + "\n\t- username";
+            if (!emailAvailable) msg = msg + "\n\t- email";
+            throw new ResourcePersistenceException(msg);
         }
 
-        AppUser registeredUser = null;
-        if (unique) {
-             registeredUser = userDAO.save(newUser);
-        }
+        AppUser registeredUser = userDAO.save(newUser);
 
         if (registeredUser == null) {
-            return false;
+            throw new ResourcePersistenceException("The user could not be persisted to the datasource!");
         }
 
         return true;
 
     }
 
-    public AppUser authenticateUser(String username, String password) {
-        File usersFile = new File("resources/data.txt");
+    public void authenticateUser(String username, String password) {
 
-        try(BufferedReader br = new BufferedReader(new FileReader(usersFile))) {
-            for(String line; (line = br.readLine()) != null; ) {
-
-                String[] each = line.split(":");
-                if( each[4].equals(username) && each[5].equals(password)){
-                    AppUser authUser = new AppUser(each[1],each[2], each[3], each[4], each[5]);
-                    authUser.setId(each[0]);
-                    return authUser;
-                }
-            }
-            return null;
-        } catch(Exception e) {
-            return null;
+        if (username == null || username.trim().equals("") || password == null || password.trim().equals("")) {
+            throw new InvalidRequestException("Invalid credential values provided!");
         }
+
+        AppUser authenticatedUser = userDAO.findUserByUsernameAndPassword(username, password);
+
+        if (authenticatedUser == null) {
+            throw new AuthenticationException();
+        }
+
+        sessionUser = authenticatedUser;
+
+    }
+
+    public void logout() {
+        sessionUser = null;
+    }
+
+    public boolean isSessionActive() {
+        return sessionUser != null;
     }
 
     public boolean isUserValid(AppUser user) {

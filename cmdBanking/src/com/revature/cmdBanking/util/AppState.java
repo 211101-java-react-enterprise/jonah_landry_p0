@@ -3,9 +3,13 @@ package com.revature.cmdBanking.util;
 import com.revature.cmdBanking.screens.LoginScreen;
 import com.revature.cmdBanking.screens.RegisterScreen;
 import com.revature.cmdBanking.screens.WelcomeScreen;
+import com.revature.cmdBanking.screens.DashboardScreen;
 import com.revature.cmdBanking.services.UserService;
+import com.revature.cmdBanking.daos.AppUserDAO;
+import com.revature.cmdBanking.models.AppUser;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.InputStreamReader;
 
 /*
@@ -25,13 +29,15 @@ public class AppState {
         router = new ScreenRouter(); // Uses our screenrouter util which allows us to add/move through screens in the linked list.
         BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in)); //Input reader
 
-        UserService userService = new UserService();
+        //
+        AppUserDAO userDAO = new AppUserDAO();
+        UserService userService = new UserService(userDAO);
 
         // Adds our screens. If we make more screens, add them here!
         router.addScreen(new WelcomeScreen(consoleReader, router)); // Welcome
         router.addScreen(new RegisterScreen(consoleReader, router, userService)); // Registration
         router.addScreen(new LoginScreen(consoleReader, router, userService)); // Login
-        // Dashboard - Screen that follows login or registration. Allows users to access/create accounts
+        router.addScreen(new DashboardScreen(consoleReader, router, userService));// Dashboard - Screen that follows login or registration. Allows users to access/create accounts
         // CreateAccount - Screen for account creation
         // ManageAccount - Shows all accounts associated with the user and allows them to move to the appropriate
         //               Can be used to see transaction history, add users to joint accounts, withdraw, deposit, or close

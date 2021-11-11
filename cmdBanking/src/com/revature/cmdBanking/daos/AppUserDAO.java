@@ -2,53 +2,135 @@ package com.revature.cmdBanking.daos;
 
 import com.revature.cmdBanking.models.AppUser;
 import com.revature.cmdBanking.util.List;
+import com.revature.cmdBanking.util.ConnectionFactory;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 
 // Contains the functionality of the appUser class
 public class AppUserDAO implements CrudDAO<AppUser> {
 
-    public AppUser findUserByUsernameAndPassword(String username, String password) {
-        File usersFile = new File("resources/data.txt");
+    // Finds a user by their username in the SQL database
+    public AppUser findUserByUsername(String username) {
 
-        try(BufferedReader br = new BufferedReader(new FileReader(usersFile))) {
-            for(String line; (line = br.readLine()) != null; ) {
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
-                String[] each = line.split(":");
-                System.out.println("DEBUG: line: " + line);
-                if( each[4].equals(username) && each[5].equals(password)){
-                    AppUser authUser = new AppUser(each[1],each[2], each[3], each[4], each[5]);
-                    authUser.setId(each[0]);
-                    return authUser;
-                }
+            String sql = "select * from app_users where username = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                AppUser user = new AppUser();
+                user.setId(rs.getString("id"));
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));
+                user.setEmail(rs.getString("email"));
+                user.setUsername(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
+                return user;
             }
-            return null;
-        } catch(Exception e) {
-            return null;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
+        return null;
+
     }
 
+    // Finds a user by their email
+    public AppUser findUserByEmail(String email) {
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            String sql = "select * from app_users where email = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                AppUser user = new AppUser();
+                user.setId(rs.getString("id"));
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));
+                user.setEmail(rs.getString("email"));
+                user.setUsername(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
+                return user;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+
+    // Finds a user by email as well as password
+    public AppUser findUserByUsernameAndPassword(String username, String password) {
+
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+
+            String sql = "select * from app_users where username = ? and password = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                AppUser user = new AppUser();
+                user.setId(rs.getString("id"));
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));
+                user.setEmail(rs.getString("email"));
+                user.setUsername(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
+                return user;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
+    }
+
+    // Saves a new user into the database
     @Override
     public AppUser save(AppUser newUser) {
 
-        File usersFile = new File("resources/data.txt");
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
 
-        // try-with-resources (allows for the instantiation of AutoCloseable types that are implicitly
-        // closed when the try logic is finished)
-        try (FileWriter fileWriter = new FileWriter(usersFile, true)) {
+            newUser.setId(UUID.randomUUID().toString());
 
-            // Universally Unique IDentifier (UUID)
-            String uuid = UUID.randomUUID().toString();
-            newUser.setId(uuid);
-            fileWriter.write(newUser.toFileString() + "\n");
+            String sql = "insert into app_users (id, first_name, last_name, email, username, password) values (?, ?, ?, ?, ?, ?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, newUser.getId());
+            pstmt.setString(2, newUser.getFirstName());
+            pstmt.setString(3, newUser.getLastName());
+            pstmt.setString(4, newUser.getEmail());
+            pstmt.setString(5, newUser.getUsername());
+            pstmt.setString(6, newUser.getPassword());
 
-        } catch (Exception e) {
-            e.printStackTrace(); // leave for debugging purposes (preferably, write it to a file) - definitely remove before "production"
-            throw new RuntimeException("Error persisting user to file.");
+            int rowsInserted = pstmt.executeUpdate();
+
+            if (rowsInserted != 0) {
+                return newUser;
+            }
+
+        } catch (SQLException e) {
+            // TODO log this and throw our own custom exception to be caught in the service layer
+            e.printStackTrace();
+
         }
 
-        return newUser;
+        return null;
+
     }
 
     @Override
