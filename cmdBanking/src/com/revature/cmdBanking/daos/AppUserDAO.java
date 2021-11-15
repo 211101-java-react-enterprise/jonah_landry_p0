@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-// Contains the functionality of the appUser class
+// Contains functions that affect the appUser class
 public class AppUserDAO implements CrudDAO<AppUser> {
 
     // Finds a user by their username in the SQL database
@@ -105,9 +105,10 @@ public class AppUserDAO implements CrudDAO<AppUser> {
     public AppUser save(AppUser newUser) {
 
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-
+            // Sets the user's UUID
             newUser.setId(UUID.randomUUID().toString());
 
+            // Pushes the user to the SQL database
             String sql = "insert into app_users (id, first_name, last_name, email, username, password) values (?, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, newUser.getId());
