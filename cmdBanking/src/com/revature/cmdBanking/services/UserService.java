@@ -57,6 +57,11 @@ public class UserService {
 
     }
 
+    // Finds if a username points to a valid user
+    public AppUser getByUsername(String username){
+        return userDAO.findUserByUsername(username);
+    }
+
     // Checks that a user has the correct username and password.
     public void authenticateUser(String username, String password) {
 

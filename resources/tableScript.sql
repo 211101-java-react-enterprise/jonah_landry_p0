@@ -65,9 +65,10 @@ create table account_users (
 
 create table transactions (
 	transaction_id varchar check (transaction_id <> ''),
-	account_id varchar,
+	account1_id varchar,
+	account2_id varchar,
 	user_id varchar,
-	amount numeric(11,2),
+	amount numeric(11,2) check (amount != 0),
 
 	constraint transactions_pk
 	primary key (transaction_id),
@@ -78,3 +79,4 @@ create table transactions (
 		foreign key(account_id)
 			references accounts(account_id)
 );
+
