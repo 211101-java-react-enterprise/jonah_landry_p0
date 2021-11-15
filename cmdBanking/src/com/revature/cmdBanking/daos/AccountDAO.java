@@ -22,8 +22,9 @@ public class AccountDAO implements CrudDAO<Account>{
         AppUser queryUser = userDAO.findUserByUsername(username);
 
         // Empty array for multiple users
-        String[] users = new String[];
-        users[0] =
+        List<String> users;
+
+
         try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
             String sql = "select * from account_users where user_id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -36,7 +37,7 @@ public class AccountDAO implements CrudDAO<Account>{
                 listItem.setID(rs.getString("account_id"));
                 listItem.setBalance(rs.getDouble("balance"));
                 listItem.setName(rs.getString("account_name"));
-                listItem.setUsers(username);
+                //users.add(username);
             }
         } catch (SQLException e) {
             e.printStackTrace();
