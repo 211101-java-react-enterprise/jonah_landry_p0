@@ -32,16 +32,15 @@ public class AccountMenuScreen extends Screen{
                 router.navigate("/withdraw");
                 break;
             case "4":
-                System.out.println("Work in progress!");
-                //router.navigate("/deposit");
+                router.navigate("/deposit");
                 break;
             case "5":
-                System.out.println("Work in progress!");
-                //router.navigate("/transfer");
+                System.out.println("Transfers are a work in progress!");
+                router.navigate("/accounts");
                 break;
             case "6":
-                System.out.println("Work in progress!");
-                //router.navigate("/transactions");
+                System.out.println("Transactions are a work in progress!");
+                router.navigate("/accounts");
                 break;
             case "7":
                 break;

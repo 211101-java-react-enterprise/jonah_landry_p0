@@ -40,6 +40,21 @@ public class AccountService {
         return accountDAO.findAccountsByUser(queryUser.getUsername());
     }
 
+    public Account getAccount(AppUser owner, String target){
+        Account targetAccount = accountDAO.findAccountByUserAndName(owner, target);
+        return targetAccount;
+    }
+
+    // Updates an account with the change from a withdraw/deposit to an account.
+    public Account exchange(Account target, double change){
+        target.setBalance(target.getBalance() + change);
+        if (target.getBalance() < 0) {
+            throw new InvalidRequestException("Insuffecient funds!");
+        }
+        else accountDAO.update(target);
+        return target;
+    }
+
     public void createAccount(Account newAccount, List<String> users){
         if (isAccountValid(newAccount)) throw new InvalidRequestException("Invalid account values provided!");
 

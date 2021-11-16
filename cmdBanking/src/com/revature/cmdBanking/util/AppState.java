@@ -45,6 +45,8 @@ public class AppState {
         router.addScreen(new AccountMenuScreen(consoleReader, router)); // Menu for accounts
         router.addScreen(new AccViewScreen(consoleReader, router, userService, accountService)); // View accounts associated with a user
         router.addScreen(new AccountCreationScreen(consoleReader, router, userService, accountService));// CreateAccount - Screen for account creation
+        router.addScreen(new withdrawScreen(consoleReader, router, userService, accountService)); // Withdraw funds
+        router.addScreen(new depositScreen(consoleReader, router, userService, accountService)); // Deposit funds
         //               Can be used to see transaction history, add users to joint accounts, withdraw, deposit, or close
         //               an account.
 

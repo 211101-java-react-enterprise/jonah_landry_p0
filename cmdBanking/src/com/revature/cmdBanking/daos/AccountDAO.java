@@ -5,6 +5,7 @@ import com.revature.cmdBanking.models.AppUser;
 import com.revature.cmdBanking.util.ConnectionFactory;
 import com.revature.cmdBanking.util.LinkedList;
 import com.revature.cmdBanking.util.List;
+import sun.awt.image.ImageWatched;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +15,51 @@ import java.util.UUID;
 
 // Contains the functions necessary for the Account class to work in the database
 public class AccountDAO implements CrudDAO<Account>{
+
+    // Finds an account from a given username and account name
+    public Account findAccountByUserAndName(AppUser user, String accName){
+        // Empty Account to insert into
+        Account result = new Account();
+
+        // List for account user functionality
+        List<AppUser> users = new LinkedList<AppUser>();
+        users.add(user);
+
+        // Connection
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+            // First select accounts the user is tied to
+            String sql = "select * from account_users where user_id = ? order by account_id";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1,user.getId());
+            ResultSet rs = pstmt.executeQuery();
+
+            ResultSet rs2 = null;
+            // Find the accounts from the previous query's results
+            if (rs.next()){
+                String sql2 = "select * from accounts where account_id = ? and account_name = ?";
+                PreparedStatement pstmt2 = conn.prepareStatement(sql2);
+                pstmt2.setString(1, rs.getString("account_id"));
+                pstmt2.setString(2, accName);
+                rs2 = pstmt2.executeQuery();
+            }
+
+
+            // Turn the results into an account.
+            if (rs2.next()){
+                Account target = new Account();
+                target.setID(rs2.getString("account_id"));
+                target.setName(rs2.getString("account_name"));
+                target.setBalance(rs2.getDouble("balance"));
+                target.setUsers(users);
+                return target;
+            }
+
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+    }
+        return null;
+    }
 
     // Finds an account from a given username
     public List<Account> findAccountsByUser(String username){
@@ -127,10 +173,9 @@ public class AccountDAO implements CrudDAO<Account>{
             // Update the Account table
             String sql = "update accounts set balance = ?, account_name = ? where account_id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, String.valueOf(updatedObj.getBalance()));
+            pstmt.setDouble(1, updatedObj.getBalance());
             pstmt.setString(2, updatedObj.getName());
             pstmt.setString(3, updatedObj.getId());
-            pstmt.setString(4, updatedObj.getId());
             int row1Updates = pstmt.executeUpdate();
 
             // Wipe previous relations
