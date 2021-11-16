@@ -55,7 +55,7 @@ public class AppState {
         router.addScreen(new depositScreen(consoleReader, router, userService, accountService)); // Deposit funds
         router.addScreen(new transactionScreen(consoleReader, router, userService, accountService, transactionService));//Can be used to see transaction history.
         router.addScreen(new addUserScreen(consoleReader, router, userService, accountService));
-
+        router.addScreen(new transferScreen(consoleReader, router, userService, accountService));
 
     }
 

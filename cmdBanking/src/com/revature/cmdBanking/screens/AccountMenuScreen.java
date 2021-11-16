@@ -16,7 +16,7 @@ public class AccountMenuScreen extends Screen{
                 "2) Create new account\n" +
                 "3) Make a withdraw\n" +
                 "4) Make a deposit\n" +
-                "5) Transfer WIP\n" + // Transfer
+                "5) Transfer between accounts\n" + // Transfer
                 "6) Transactions\n" + // Transactions
                 "7) Add new user\n" + // Users
                 "8) Go back\n" +
@@ -36,8 +36,7 @@ public class AccountMenuScreen extends Screen{
                 router.navigate("/deposit");
                 break;
             case "5":
-                System.out.println("Transfers are a work in progress!");
-                router.navigate("/accounts");
+                router.navigate("/transfer");
                 break;
             case "6":
                 router.navigate("/transactions");
@@ -51,7 +50,6 @@ public class AccountMenuScreen extends Screen{
                 System.out.println("You have made an invalid selection");
         }
 
-        System.out.println("Navigating back to your dashboard...");
 
     }
 
