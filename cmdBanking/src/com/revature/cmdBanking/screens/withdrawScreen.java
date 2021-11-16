@@ -5,6 +5,8 @@ import com.revature.cmdBanking.models.Account;
 import com.revature.cmdBanking.models.AppUser;
 import com.revature.cmdBanking.services.AccountService;
 import com.revature.cmdBanking.services.UserService;
+import com.revature.cmdBanking.util.LinkedList;
+import com.revature.cmdBanking.util.List;
 import com.revature.cmdBanking.util.ScreenRouter;
 
 import java.io.BufferedReader;
@@ -22,8 +24,18 @@ public class withdrawScreen extends Screen{
     @Override
     public void render() throws Exception{
         AppUser sessionUser = userService.getSessionUser();
-        System.out.print("Withdraw menu\n" +
-                "Input account name: ");
+        List<Account> accounts = new LinkedList<Account>();
+        accounts = accountService.getAccounts(sessionUser);
+
+        System.out.print("Withdraw menu\n" );
+        int accountCount = 0;
+        while (accountCount < accounts.size()){
+            System.out.println( accounts.get(accountCount).getName() +
+                    " : " + accounts.get(accountCount).getBalance() +
+                    "$");
+            accountCount++;
+        }
+        System.out.print("Input Account Name: ");
         String userInput = consoleReader.readLine();
 
         Account target = accountService.getAccount(sessionUser, userInput);

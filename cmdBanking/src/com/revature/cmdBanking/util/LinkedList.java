@@ -88,6 +88,17 @@ public class LinkedList<T> implements List<T> {
         return false;
     }
 
+    public boolean popTop(){
+        if (head.nextNode != null){
+            head = head.nextNode;
+            return true;
+        }
+        else {
+            head = null;
+            return true;
+        }
+    }
+
     @Override
     public int size() {
         return size;

@@ -101,7 +101,7 @@ public class AccountDAO implements CrudDAO<Account>{
 
                 users.add(userDAO.findUserByUsername(username));
                 listItem.setUsers(users);
-                users = null;
+                users = new LinkedList<AppUser>();
 
                 qAccounts.add(listItem);
             }

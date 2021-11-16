@@ -40,6 +40,7 @@ public class AccountCreationScreen extends Screen{
                     System.out.println("You've already used that name!");
                     invalidName = true;
                 }
+                counter ++;
             }
         }
 
