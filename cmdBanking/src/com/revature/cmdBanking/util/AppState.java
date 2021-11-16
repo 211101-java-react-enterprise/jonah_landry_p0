@@ -34,15 +34,17 @@ public class AppState {
 
         //
         AccountDAO accountDAO = new AccountDAO();
-        AccountService accountService = new AccountService();
+        AccountService accountService = new AccountService(accountDAO, userService);
 
         // Adds our screens. If we make more screens, add them here!
         router.addScreen(new WelcomeScreen(consoleReader, router)); // Welcome
         router.addScreen(new RegisterScreen(consoleReader, router, userService)); // Registration
         router.addScreen(new LoginScreen(consoleReader, router, userService)); // Login
         router.addScreen(new DashboardScreen(consoleReader, router, userService));// Dashboard - Screen that follows login or registration. Allows users to access/create accounts
-        router.addScreen(new AccountCreationScreen(consoleReader, router, accountService));// CreateAccount - Screen for account creation
-        // ManageAccount - Shows all accounts associated with the user and allows them to move to the appropriate
+        router.addScreen(new userScreen(consoleReader, router, userService));// ManageAccount - Shows all accounts associated with the user and allows them to move to the appropriate
+        router.addScreen(new AccountMenuScreen(consoleReader, router)); // Menu for accounts
+        router.addScreen(new AccViewScreen(consoleReader, router, userService, accountService)); // View accounts associated with a user
+        router.addScreen(new AccountCreationScreen(consoleReader, router, userService, accountService));// CreateAccount - Screen for account creation
         //               Can be used to see transaction history, add users to joint accounts, withdraw, deposit, or close
         //               an account.
 

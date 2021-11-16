@@ -19,7 +19,7 @@ public class AccountService {
         this.userService = userService;
     }
 
-    // Add a new user to the account
+    // Add a new user to the account. TODO: Implement me baby
     public boolean addUser(AppUser newUser, Account tAccount){
         // Checks if the data is valid.
         if (!userService.isUserValid(newUser)) {
@@ -29,11 +29,19 @@ public class AccountService {
             throw new AuthorizationException("No active user session to perform operation!");
         }
 
+        tAccount.getUsers().add(newUser);
 
+
+
+        return true;
+    }
+
+    public List<Account> getAccounts(AppUser queryUser){
+        return accountDAO.findAccountsByUser(queryUser.getUsername());
     }
 
     public void createAccount(Account newAccount, List<String> users){
-        if (!isAccountValid(newAccount)) throw new InvalidRequestException("Invalid account values provided!");
+        if (isAccountValid(newAccount)) throw new InvalidRequestException("Invalid account values provided!");
 
         // Adds the initial user
         List<AppUser> newUsers = new LinkedList<AppUser>();
@@ -41,7 +49,7 @@ public class AccountService {
 
         // Adds additional users given in creation
         int currUserCounter = 0;
-        while (users.get(currUserCounter) != null) {
+        while (currUserCounter < users.size()) {
             boolean unique = true;
             if (userService.getByUsername(users.get(currUserCounter)) != null) {
                 // Logic to prevent repeat user inputs
@@ -53,10 +61,12 @@ public class AccountService {
                     savedUserCounter ++;
                 }
                 if (unique) newUsers.add(userService.getByUsername(users.get(currUserCounter)));
+
             }
             else {
                 throw new InvalidRequestException("Given user does not exist!");
             }
+            currUserCounter ++;
         }
 
         newAccount.setUsers(newUsers);

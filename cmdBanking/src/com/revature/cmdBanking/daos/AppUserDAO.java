@@ -25,7 +25,7 @@ public class AppUserDAO implements CrudDAO<AppUser> {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 AppUser user = new AppUser();
-                user.setId(rs.getString("id"));
+                user.setId(rs.getString("user_id"));
                 user.setFirstName(rs.getString("first_name"));
                 user.setLastName(rs.getString("last_name"));
                 user.setEmail(rs.getString("email"));
@@ -53,7 +53,7 @@ public class AppUserDAO implements CrudDAO<AppUser> {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 AppUser user = new AppUser();
-                user.setId(rs.getString("id"));
+                user.setId(rs.getString("user_id"));
                 user.setFirstName(rs.getString("first_name"));
                 user.setLastName(rs.getString("last_name"));
                 user.setEmail(rs.getString("email"));
@@ -83,7 +83,7 @@ public class AppUserDAO implements CrudDAO<AppUser> {
 
             if (rs.next()) {
                 AppUser user = new AppUser();
-                user.setId(rs.getString("id"));
+                user.setId(rs.getString("user_id"));
                 user.setFirstName(rs.getString("first_name"));
                 user.setLastName(rs.getString("last_name"));
                 user.setEmail(rs.getString("email"));
@@ -109,7 +109,7 @@ public class AppUserDAO implements CrudDAO<AppUser> {
             newUser.setId(UUID.randomUUID().toString());
 
             // Pushes the user to the SQL database
-            String sql = "insert into app_users (id, first_name, last_name, email, username, password) values (?, ?, ?, ?, ?, ?)";
+            String sql = "insert into app_users (user_id, first_name, last_name, email, username, password) values (?, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, newUser.getId());
             pstmt.setString(2, newUser.getFirstName());
