@@ -146,6 +146,23 @@ public class AppUserDAO implements CrudDAO<AppUser> {
 
     @Override
     public boolean update(AppUser updatedObj) {
+        // Update the user table
+        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
+            String sql = "update app_users set first_name = ?, last_name = ?, email = ?, username = ?, password = ? where user_id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, updatedObj.getFirstName());
+            pstmt.setString(2, updatedObj.getLastName());
+            pstmt.setString(3, updatedObj.getEmail());
+            pstmt.setString(4, updatedObj.getUsername());
+            pstmt.setString(5, updatedObj.getPassword());
+            int rowUpdates = pstmt.executeUpdate();
+
+            // Return true if it worked
+            return (rowUpdates != 0);
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+
         return false;
     }
 

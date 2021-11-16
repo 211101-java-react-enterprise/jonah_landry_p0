@@ -1,8 +1,10 @@
 package com.revature.cmdBanking.util;
 
 import com.revature.cmdBanking.daos.AccountDAO;
+import com.revature.cmdBanking.daos.TransactionDAO;
 import com.revature.cmdBanking.screens.*;
 import com.revature.cmdBanking.services.AccountService;
+import com.revature.cmdBanking.services.TransactionService;
 import com.revature.cmdBanking.services.UserService;
 import com.revature.cmdBanking.daos.AppUserDAO;
 import com.revature.cmdBanking.models.AppUser;
@@ -28,16 +30,20 @@ public class AppState {
         router = new ScreenRouter(); // Uses our screenrouter util which allows us to add/move through screens in the linked list.
         BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in)); //Input reader
 
-        //
+        // Users
         AppUserDAO userDAO = new AppUserDAO();
         UserService userService = new UserService(userDAO);
 
-        //
+        // Accounts
         AccountDAO accountDAO = new AccountDAO();
         AccountService accountService = new AccountService(accountDAO, userService);
 
+        // Transactions
+        TransactionDAO transactionDAO = new TransactionDAO();
+        TransactionService transactionService = new TransactionService(transactionDAO, userService, accountService);
+
         // Adds our screens. If we make more screens, add them here!
-        router.addScreen(new WelcomeScreen(consoleReader, router)); // Welcome
+        router.addScreen(new WelcomeScreen(consoleReader, router, userService)); // Welcome
         router.addScreen(new RegisterScreen(consoleReader, router, userService)); // Registration
         router.addScreen(new LoginScreen(consoleReader, router, userService)); // Login
         router.addScreen(new DashboardScreen(consoleReader, router, userService));// Dashboard - Screen that follows login or registration. Allows users to access/create accounts
@@ -47,8 +53,8 @@ public class AppState {
         router.addScreen(new AccountCreationScreen(consoleReader, router, userService, accountService));// CreateAccount - Screen for account creation
         router.addScreen(new withdrawScreen(consoleReader, router, userService, accountService)); // Withdraw funds
         router.addScreen(new depositScreen(consoleReader, router, userService, accountService)); // Deposit funds
-        //               Can be used to see transaction history, add users to joint accounts, withdraw, deposit, or close
-        //               an account.
+        router.addScreen(new transactionScreen(consoleReader, router, userService, accountService, transactionService));//Can be used to see transaction history.
+        router.addScreen(new addUserScreen(consoleReader, router, userService, accountService));
 
 
     }

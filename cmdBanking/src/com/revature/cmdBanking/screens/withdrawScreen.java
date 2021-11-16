@@ -53,5 +53,10 @@ public class withdrawScreen extends Screen{
         target = accountService.exchange(target, amtTaken);
         System.out.println("Transaction successful! Your new balance is: " +
                 target.getBalance());
+
+        System.out.println("Type anything to exit.");
+        userInput = consoleReader.readLine();
+
+        router.navigate("/accounts");
     }
 }

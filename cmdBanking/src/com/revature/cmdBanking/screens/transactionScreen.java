@@ -1,10 +1,10 @@
 package com.revature.cmdBanking.screens;
 
-import com.revature.cmdBanking.exceptions.InvalidRequestException;
 import com.revature.cmdBanking.models.Account;
 import com.revature.cmdBanking.models.AppUser;
-import com.revature.cmdBanking.screens.Screen;
+import com.revature.cmdBanking.models.Transaction;
 import com.revature.cmdBanking.services.AccountService;
+import com.revature.cmdBanking.services.TransactionService;
 import com.revature.cmdBanking.services.UserService;
 import com.revature.cmdBanking.util.LinkedList;
 import com.revature.cmdBanking.util.List;
@@ -12,23 +12,25 @@ import com.revature.cmdBanking.util.ScreenRouter;
 
 import java.io.BufferedReader;
 
-public class depositScreen extends Screen {
+public class transactionScreen extends Screen{
+
     private final UserService userService;
     private final AccountService accountService;
-
-    public depositScreen(BufferedReader consoleReader, ScreenRouter router, UserService userService, AccountService accountService) {
-        super("DepositScreen", "/deposit", consoleReader, router);
+    private final TransactionService transactionService;
+    public transactionScreen(BufferedReader consoleReader, ScreenRouter router, UserService userService, AccountService accountService, TransactionService transactionService) {
+        super("TransactionScreen","/transactions", consoleReader, router);
         this.userService = userService;
         this.accountService = accountService;
+        this.transactionService = transactionService;
     }
 
-    @Override
     public void render() throws Exception {
         AppUser sessionUser = userService.getSessionUser();
         List<Account> accounts = new LinkedList<Account>();
+        List<Transaction> transactions = new LinkedList<Transaction>();
         accounts = accountService.getAccounts(sessionUser);
 
-        System.out.print("Deposit menu\n");
+        System.out.print("Transaction menu\n");
         int accountCount = 0;
         while (accountCount < accounts.size()){
             System.out.println( accounts.get(accountCount).getName() +
@@ -39,25 +41,17 @@ public class depositScreen extends Screen {
         System.out.print("Input Account Name: ");
         String userInput = consoleReader.readLine();
 
-        Account target = accountService.getAccount(sessionUser, userInput);
-        if (target == null)
-            throw new InvalidRequestException("An account with that name belonging to this user does not exist.");
-
-        System.out.print(target.getName() +
-                ":\nBalance = " +
-                target.getBalance() +
-                "\nHow much do you want to deposit?\n" +
-                "> ");
-        userInput = consoleReader.readLine();
-        double amtTaken = Math.abs(Double.parseDouble(userInput));
-
-        target = accountService.exchange(target, amtTaken);
-        System.out.println("Transaction successful! Your new balance is: " +
-                target.getBalance() + "$");
-
+        // Fetch our transactions
+        transactions = transactionService.getTransactionsFromAccount(accountService.getAccount(sessionUser,userInput));
+        int transCount = 0;
+        while (transCount < transactions.size()) {
+            System.out.println("Date: " + transactions.get(transCount).gettTime() +
+                    "\tAmount: " + transactions.get(transCount).getAmount() + "\n");
+            transCount ++;
+        }
         System.out.println("Type anything to exit.");
         userInput = consoleReader.readLine();
-
         router.navigate("/accounts");
+
     }
 }

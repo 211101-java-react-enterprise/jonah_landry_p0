@@ -35,29 +35,33 @@ public class AccountDAO implements CrudDAO<Account>{
 
             ResultSet rs2 = null;
             // Find the accounts from the previous query's results
-            if (rs.next()){
+            while (rs.next()){
                 String sql2 = "select * from accounts where account_id = ? and account_name = ?";
                 PreparedStatement pstmt2 = conn.prepareStatement(sql2);
                 pstmt2.setString(1, rs.getString("account_id"));
                 pstmt2.setString(2, accName);
                 rs2 = pstmt2.executeQuery();
+                // Turn the results into an account.
+                if (rs2.next()){
+                    Account target = new Account();
+                    target.setID(rs2.getString("account_id"));
+                    target.setName(rs2.getString("account_name"));
+                    target.setBalance(rs2.getDouble("balance"));
+                    target.setUsers(users);
+                    return target;
+                }
             }
 
 
-            // Turn the results into an account.
-            if (rs2.next()){
-                Account target = new Account();
-                target.setID(rs2.getString("account_id"));
-                target.setName(rs2.getString("account_name"));
-                target.setBalance(rs2.getDouble("balance"));
-                target.setUsers(users);
-                return target;
-            }
+
+
 
 
         }catch (SQLException e) {
             e.printStackTrace();
-    }
+    }catch (NullPointerException e){
+            return null;
+        }
         return null;
     }
 
@@ -194,7 +198,11 @@ public class AccountDAO implements CrudDAO<Account>{
                 int row3Updates = pstmt3.executeUpdate();
                 userIndex = userIndex + 1;
             }
-            return true;
+            if (row1Updates != 0)
+            {
+                return true;
+            }
+            return false;
         } catch (SQLException e){
             e.printStackTrace();
         }

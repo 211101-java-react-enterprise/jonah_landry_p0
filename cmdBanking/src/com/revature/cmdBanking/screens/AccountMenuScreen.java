@@ -17,8 +17,9 @@ public class AccountMenuScreen extends Screen{
                 "3) Make a withdraw\n" +
                 "4) Make a deposit\n" +
                 "5) Transfer WIP\n" + // Transfer
-                "6) Transactions WIP\n" + // Transactions
-                "7) Go back\n" +
+                "6) Transactions\n" + // Transactions
+                "7) Add new user\n" + // Users
+                "8) Go back\n" +
                 "> ");
         String userSelection = consoleReader.readLine();
         switch (userSelection) {
@@ -39,10 +40,12 @@ public class AccountMenuScreen extends Screen{
                 router.navigate("/accounts");
                 break;
             case "6":
-                System.out.println("Transactions are a work in progress!");
-                router.navigate("/accounts");
+                router.navigate("/transactions");
                 break;
             case "7":
+                router.navigate("/add-user");
+                break;
+            case "8":
                 break;
             default:
                 System.out.println("You have made an invalid selection");

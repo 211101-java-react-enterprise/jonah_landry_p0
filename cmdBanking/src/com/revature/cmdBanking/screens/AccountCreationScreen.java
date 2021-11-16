@@ -68,5 +68,7 @@ public class AccountCreationScreen extends Screen{
             System.out.println(e.getMessage());
         }
 
+        router.navigate("/accounts");
+
     }
 }

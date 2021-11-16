@@ -1,11 +1,13 @@
 package com.revature.cmdBanking.services;
 
 import com.revature.cmdBanking.daos.AccountDAO;
+import com.revature.cmdBanking.daos.TransactionDAO;
 import com.revature.cmdBanking.exceptions.AuthorizationException;
 import com.revature.cmdBanking.exceptions.InvalidRequestException;
 import com.revature.cmdBanking.exceptions.ResourcePersistenceException;
 import com.revature.cmdBanking.models.Account;
 import com.revature.cmdBanking.models.AppUser;
+import com.revature.cmdBanking.models.Transaction;
 import com.revature.cmdBanking.util.LinkedList;
 import com.revature.cmdBanking.util.List;
 
@@ -14,12 +16,13 @@ public class AccountService {
     private final AccountDAO accountDAO;
     private final UserService userService;
 
+
     public AccountService(AccountDAO accountDAO, UserService userService) {
         this.accountDAO = accountDAO;
         this.userService = userService;
     }
 
-    // Add a new user to the account. TODO: Implement me baby
+    // Add a new user to the account.
     public boolean addUser(AppUser newUser, Account tAccount){
         // Checks if the data is valid.
         if (!userService.isUserValid(newUser)) {
@@ -28,12 +31,17 @@ public class AccountService {
         if (!userService.isSessionActive()) {
             throw new AuthorizationException("No active user session to perform operation!");
         }
+        if (newUser.getId() == null) {
+            throw new InvalidRequestException("This user does not exist!");
+        }
+        if (accountDAO.findAccountByUserAndName(newUser,tAccount.getName()) == null){
+            // Add the user to the list
+            tAccount.getUsers().add(newUser);
+            //Append them
+            return accountDAO.update(tAccount);
+        }
+        else return false;
 
-        tAccount.getUsers().add(newUser);
-
-
-
-        return true;
     }
 
     public List<Account> getAccounts(AppUser queryUser){
@@ -47,11 +55,25 @@ public class AccountService {
 
     // Updates an account with the change from a withdraw/deposit to an account.
     public Account exchange(Account target, double change){
+        // Initialize transaction DAO to save the changes
+        TransactionDAO transactionDAO = new TransactionDAO();
+
+        // Perform the change
         target.setBalance(target.getBalance() + change);
         if (target.getBalance() < 0) {
             throw new InvalidRequestException("Insuffecient funds!");
         }
-        else accountDAO.update(target);
+        else {
+
+            // Save the transaction to the database
+            Transaction exchangeT = new Transaction(change);
+            exchangeT.setUser_id(userService.getSessionUser().getId());
+            exchangeT.setAccount_id(target.getId());
+            transactionDAO.save(exchangeT);
+
+            // Save the changed account as well
+            accountDAO.update(target);
+        }
         return target;
     }
 

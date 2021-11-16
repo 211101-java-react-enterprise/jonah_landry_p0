@@ -1,5 +1,6 @@
 package com.revature.cmdBanking.screens;
 
+import com.revature.cmdBanking.services.UserService;
 import com.revature.cmdBanking.util.ScreenRouter;
 
 import java.io.BufferedReader;
@@ -7,13 +8,17 @@ import java.io.BufferedReader;
 import static com.revature.cmdBanking.util.AppState.shutdown;
 
 public class WelcomeScreen extends Screen {
+    private final UserService userService;
 
-    public WelcomeScreen(BufferedReader consoleReader, ScreenRouter router) {
+    public WelcomeScreen(BufferedReader consoleReader, ScreenRouter router, UserService userService) {
         super("WelcomeScreen", "/welcome", consoleReader, router);
+        this.userService = userService;
     }
 
     @Override
     public void render() throws Exception {
+        // Route back into the menu if there's an active user
+        if (userService.getSessionUser() != null) router.navigate("/dashboard");
         // Shows the user their three initial options.
         System.out.print("Welcome to CMD Banking!\n" +
                 "1) Login\n" +
