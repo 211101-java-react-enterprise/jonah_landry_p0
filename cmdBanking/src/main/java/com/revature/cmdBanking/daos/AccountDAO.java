@@ -32,14 +32,13 @@ public class AccountDAO implements CrudDAO<Account>{
             pstmt.setString(1,user.getId());
             ResultSet rs = pstmt.executeQuery();
 
-            ResultSet rs2 = null;
+
             // Find the accounts from the previous query's results
             while (rs.next()){
-                String sql2 = "select * from accounts where account_id = ? and account_name = ?";
+                String sql2 = "select * from accounts where account_id = ?";
                 PreparedStatement pstmt2 = conn.prepareStatement(sql2);
                 pstmt2.setString(1, rs.getString("account_id"));
-                pstmt2.setString(2, accName);
-                rs2 = pstmt2.executeQuery();
+                ResultSet rs2 = pstmt2.executeQuery();
                 // Turn the results into an account.
                 if (rs2.next()){
                     Account target = new Account();

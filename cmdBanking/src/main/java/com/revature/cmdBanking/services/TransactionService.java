@@ -1,6 +1,7 @@
 package com.revature.cmdBanking.services;
 
 import com.revature.cmdBanking.daos.TransactionDAO;
+import com.revature.cmdBanking.exceptions.InvalidRequestException;
 import com.revature.cmdBanking.models.Account;
 import com.revature.cmdBanking.models.Transaction;
 import com.revature.cmdBanking.util.List;
@@ -18,7 +19,8 @@ public class TransactionService {
     }
 
     public List<Transaction> getTransactionsFromAccount(Account target){
-        return transactionDAO.findTransactionsByAccount(target);
+        if (accountService.isAccountValid(target)) return transactionDAO.findTransactionsByAccount(target);
+        else throw new InvalidRequestException("Invalid Account provided!");
     }
 
 }

@@ -139,14 +139,24 @@ public class UserServiceTestSuite {
     }
 
     // TODO implement test case
-    @Test
+    @Test(expected = ResourcePersistenceException.class)
     public void test_registerNewUser_throwsInvalidRequestException_givenUserWithDuplicatedEmailOrUsername() {
 
         // Arrange
-
+        AppUser validUser = new AppUser("valid", "valid", "valid", "valid", "valid");
+        AppUser dupeUser = new AppUser("valid", "valid", "differentValid", "valid", "valid");
+        AppUser dupeEmail = new AppUser("valid", "valid", "valid", "difValid", "valid");
+        AppUser dupeBoth = new AppUser("valid", "valid", "valid", "valid", "valid");
         // Act
-
-        // Assert
+        try{
+            boolean actualResult = sut.registerNewUser(validUser);
+            actualResult = sut.registerNewUser(dupeBoth);
+            actualResult = sut.registerNewUser(dupeUser);
+            actualResult = sut.registerNewUser(dupeEmail);
+        } finally {
+            // Assert
+            verify(mockUserDAO, times(1)).save(dupeBoth); // How many times we want save to be called from what we do in Act
+        }
 
     }
 
