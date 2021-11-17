@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="apache-maven-3.8.3-bin">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../In Class work/qMain/resources/apache-maven-3.8.3-bin.zip!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
