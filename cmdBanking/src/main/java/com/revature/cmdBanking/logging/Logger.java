@@ -41,7 +41,7 @@ public class Logger {
     }
 
     public void logAndPrint(String message){
-        try (Writer logWriter = new FileWriter("resources/logs/app.log", true)) {
+        try (Writer logWriter = new FileWriter("src/main/resources/logs/app.log", true)) {
             logWriter.write(message + "\n");
             System.out.println(message);
 
@@ -55,7 +55,7 @@ public class Logger {
 
     public void log(String message, Object... args) {
 
-        try (Writer logWriter = new FileWriter("resources/logs/app.log", true)) {
+        try (Writer logWriter = new FileWriter("src/main/resources/logs/app.log", true)) {
 
             String formattedMsg = String.format(message, args);
             logWriter.write(formattedMsg + "\n");

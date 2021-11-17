@@ -46,7 +46,7 @@ public class transactionScreen extends Screen{
         int transCount = 0;
         while (transCount < transactions.size()) {
             System.out.println("Date: " + transactions.get(transCount).gettTime() +
-                    "\tAmount: " + transactions.get(transCount).getAmount() + "\n");
+                    "\tAmount: " + transactions.get(transCount).getAmount());
             transCount ++;
         }
         System.out.println("Type anything to exit.");
