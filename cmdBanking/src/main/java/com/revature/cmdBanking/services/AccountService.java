@@ -36,6 +36,7 @@ public class AccountService {
         if (newUser.getId() == null) {
             throw new InvalidRequestException("This user does not exist!");
         }
+
         if (accountDAO.findAccountByUserAndName(newUser,tAccount.getName()) == null){
             // Add the user to the list
             tAccount.getUsers().add(newUser);
@@ -47,16 +48,25 @@ public class AccountService {
     }
 
     public List<Account> getAccounts(AppUser queryUser){
+        // Checks if the data is valid.
+        if (!userService.isUserValid(queryUser)) {
+            throw new InvalidRequestException("Invalid user data provided!");
+        }
         return accountDAO.findAccountsByUser(queryUser.getUsername());
     }
 
     public Account getAccount(AppUser owner, String target){
+        // Checks if the data is valid.
+        if (!userService.isUserValid(owner)) {
+            throw new InvalidRequestException("Invalid user data provided!");
+        }
         Account targetAccount = accountDAO.findAccountByUserAndName(owner, target);
         return targetAccount;
     }
 
     // Updates an account with the change from a withdraw/deposit to an account.
     public Account exchange(Account target, double change){
+
         // Initialize transaction DAO to save the changes
         TransactionDAO transactionDAO = new TransactionDAO();
 
@@ -81,7 +91,7 @@ public class AccountService {
     }
 
     public void createAccount(Account newAccount, List<String> users){
-        if (isAccountValid(newAccount)) {
+        if (!isAccountValid(newAccount)) {
             throw new InvalidRequestException("Invalid account values provided!");
         }
 
@@ -123,7 +133,7 @@ public class AccountService {
         if (account == null) return false; // Check entire account
         if (account.getName() == null || account.getName().trim().equals("")) return false; // Check name
         if (account.getBalance() < 0) return false; // Check Balance
-        if (account.getUsers() == null || account.getUsers().get(0).getUsername().equals("")) return false; // Check users
+        // Don't check users because it's assigned in decleration, after the check
         return true;
     }
 

@@ -4,9 +4,7 @@ package com.revature.cmdBanking.services;
 import com.revature.cmdBanking.daos.TransactionDAO;
 import com.revature.cmdBanking.models.Account;
 import com.revature.cmdBanking.models.Transaction;
-import com.revature.cmdBanking.services.UserService;
 import com.revature.cmdBanking.exceptions.InvalidRequestException;
-import com.revature.cmdBanking.exceptions.ResourcePersistenceException;
 import com.revature.cmdBanking.util.List;
 import org.junit.After;
 import org.junit.Assert;
@@ -33,6 +31,7 @@ public class TransactionServiceTestSuite {
     public void testCaseCleanUp() {
         sut = null;
     }
+
 
     @Test(expected = InvalidRequestException.class)
     public void test_TransactionFromAccount_throwsError_givenInvalidAccount() {
