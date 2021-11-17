@@ -5,6 +5,7 @@ import com.revature.cmdBanking.daos.TransactionDAO;
 import com.revature.cmdBanking.exceptions.AuthorizationException;
 import com.revature.cmdBanking.exceptions.InvalidRequestException;
 import com.revature.cmdBanking.exceptions.ResourcePersistenceException;
+import com.revature.cmdBanking.logging.Logger;
 import com.revature.cmdBanking.models.Account;
 import com.revature.cmdBanking.models.AppUser;
 import com.revature.cmdBanking.models.Transaction;
@@ -15,6 +16,7 @@ public class AccountService {
 
     private final AccountDAO accountDAO;
     private final UserService userService;
+    private  Logger logger = new Logger(false);
 
 
     public AccountService(AccountDAO accountDAO, UserService userService) {
@@ -60,9 +62,10 @@ public class AccountService {
 
         // Perform the change
         target.setBalance(target.getBalance() + change);
-        if (target.getBalance() < 0) {
+        if (target.getBalance() < 0){
             throw new InvalidRequestException("Insuffecient funds!");
         }
+
         else {
 
             // Save the transaction to the database
@@ -78,7 +81,9 @@ public class AccountService {
     }
 
     public void createAccount(Account newAccount, List<String> users){
-        if (isAccountValid(newAccount)) throw new InvalidRequestException("Invalid account values provided!");
+        if (isAccountValid(newAccount)) {
+            throw new InvalidRequestException("Invalid account values provided!");
+        }
 
         // Adds the initial user
         List<AppUser> newUsers = new LinkedList<AppUser>();

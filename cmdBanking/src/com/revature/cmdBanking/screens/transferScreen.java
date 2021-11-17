@@ -1,6 +1,7 @@
 package com.revature.cmdBanking.screens;
 
 import com.revature.cmdBanking.exceptions.InvalidRequestException;
+import com.revature.cmdBanking.logging.Logger;
 import com.revature.cmdBanking.models.Account;
 import com.revature.cmdBanking.models.AppUser;
 import com.revature.cmdBanking.services.AccountService;
@@ -39,10 +40,13 @@ public class transferScreen extends Screen{
         String userInput = consoleReader.readLine();
 
         Account source = accountService.getAccount(sessionUser, userInput);
-        if (source == null) throw new InvalidRequestException("An account with that name belonging to this user does not exist.");
+        if (source == null) {
+            logger.logAndPrint("An account with that name belonging to this user does not exist.");
+            throw new InvalidRequestException("An account with that name belonging to this user does not exist.");
+        }
 
 
-        System.out.println("Input destination account name: ");
+        System.out.print("Input destination account name: ");
         userInput = consoleReader.readLine();
 
         Account dest = accountService.getAccount(sessionUser, userInput);

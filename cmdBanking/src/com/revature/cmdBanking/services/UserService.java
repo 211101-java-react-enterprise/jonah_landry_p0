@@ -4,6 +4,7 @@ import com.revature.cmdBanking.daos.AppUserDAO;
 import com.revature.cmdBanking.exceptions.AuthenticationException;
 import com.revature.cmdBanking.exceptions.InvalidRequestException;
 import com.revature.cmdBanking.exceptions.ResourcePersistenceException;
+import com.revature.cmdBanking.logging.Logger;
 import com.revature.cmdBanking.models.AppUser;
 
 import java.io.BufferedReader;
@@ -15,6 +16,7 @@ public class UserService {
 
     private final AppUserDAO userDAO ;
     private AppUser sessionUser;
+    private Logger logger = new Logger(false);
 
     public UserService(AppUserDAO userDAO) {
         this.userDAO = userDAO;

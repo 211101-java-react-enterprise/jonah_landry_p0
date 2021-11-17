@@ -2,6 +2,7 @@ package com.revature.cmdBanking.util;
 
 import com.revature.cmdBanking.daos.AccountDAO;
 import com.revature.cmdBanking.daos.TransactionDAO;
+import com.revature.cmdBanking.logging.Logger;
 import com.revature.cmdBanking.screens.*;
 import com.revature.cmdBanking.services.AccountService;
 import com.revature.cmdBanking.services.TransactionService;
@@ -24,11 +25,16 @@ public class AppState {
 
     private static boolean appRunning;
     private final ScreenRouter router;
+    private Logger logger = new Logger(false);
 
     public AppState() {
+        logger.log("Initializing application...");
+
         appRunning = true; // Boolean value that we can change when we want to end the application.
         router = new ScreenRouter(); // Uses our screenrouter util which allows us to add/move through screens in the linked list.
         BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in)); //Input reader
+
+
 
         // Users
         AppUserDAO userDAO = new AppUserDAO();
@@ -57,6 +63,8 @@ public class AppState {
         router.addScreen(new addUserScreen(consoleReader, router, userService, accountService));
         router.addScreen(new transferScreen(consoleReader, router, userService, accountService));
 
+        logger.log("Application initialized!");
+
     }
 
     public void startup() {
@@ -66,7 +74,7 @@ public class AppState {
                 router.navigate("/welcome"); //Starts everything by heading to the welcome menu.
             }
         } catch (Exception e) {
-            e.printStackTrace(); // Prints out errors if we have an issue going to welcome.
+            logger.logAndPrint(e.getMessage()); // Prints out errors if we have an issue going to welcome.
         }
     }
 

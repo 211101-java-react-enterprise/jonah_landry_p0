@@ -5,7 +5,6 @@ import com.revature.cmdBanking.models.AppUser;
 import com.revature.cmdBanking.util.ConnectionFactory;
 import com.revature.cmdBanking.util.LinkedList;
 import com.revature.cmdBanking.util.List;
-import sun.awt.image.ImageWatched;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

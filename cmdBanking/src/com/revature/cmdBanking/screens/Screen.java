@@ -1,12 +1,13 @@
 package com.revature.cmdBanking.screens;
 
+import com.revature.cmdBanking.logging.Logger;
 import com.revature.cmdBanking.util.ScreenRouter;
 
 import java.io.BufferedReader;
 
 
 public abstract class Screen {
-
+    protected Logger logger = Logger.getLogger(false);
     protected String name;
     protected String route;
     protected BufferedReader consoleReader;

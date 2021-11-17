@@ -2,10 +2,10 @@ package com.revature.cmdBanking.screens;
 
 import com.revature.cmdBanking.exceptions.AuthenticationException;
 import com.revature.cmdBanking.exceptions.InvalidRequestException;
+import com.revature.cmdBanking.logging.Logger;
 import com.revature.cmdBanking.models.AppUser;
 import com.revature.cmdBanking.services.UserService;
 import com.revature.cmdBanking.util.ScreenRouter;
-import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 
 import java.io.BufferedReader;
 
@@ -32,7 +32,7 @@ public class LoginScreen extends Screen {
             userService.authenticateUser(username, password);
             router.navigate("/dashboard");
         } catch (InvalidRequestException | AuthenticationException e) {
-            System.out.println(e.getMessage());
+            logger.logAndPrint(e.getMessage());
         }
 
     }
